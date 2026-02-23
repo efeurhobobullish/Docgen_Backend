@@ -5,6 +5,7 @@ import helmet from "helmet";
 import authRoutes from "./modules/auth/auth.routes.js";
 import githubRoutes from "./modules/github/github.routes.js";
 import docsRoutes from "./modules/docs/docs.routes.js";
+import billingRoutes from "./modules/billing/billing.routes.js";
 
 import { protect } from "./middlewares/auth.middleware.js";
 
@@ -17,16 +18,21 @@ app.use(helmet());
 app.use(cors());
 
 /* ======================
-   WEBHOOK RAW BODY
-   (MUST come before express.json)
+   RAW BODY FOR WEBHOOKS
+   (MUST come BEFORE express.json)
 ====================== */
 app.use(
   "/api/github/webhook",
   express.raw({ type: "application/json" })
 );
 
+app.use(
+  "/api/billing/webhook",
+  express.raw({ type: "application/json" })
+);
+
 /* ======================
-   BODY PARSER
+   JSON BODY PARSER
 ====================== */
 app.use(express.json());
 
@@ -36,6 +42,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/github", githubRoutes);
 app.use("/api/docs", docsRoutes);
+app.use("/api/billing", billingRoutes);
 
 /* ======================
    TEST PROTECTED ROUTE
@@ -51,7 +58,20 @@ app.get("/api/protected", protect, (req, res) => {
    ROOT
 ====================== */
 app.get("/", (req, res) => {
-  res.json({ message: "DocGen API running 🚀" });
+  res.json({
+    message: "DocGen API running 🚀",
+    status: "OK",
+  });
+});
+
+/* ======================
+   HEALTH CHECK
+====================== */
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    uptime: process.uptime(),
+    timestamp: Date.now(),
+  });
 });
 
 /* ======================
