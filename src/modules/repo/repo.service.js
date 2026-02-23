@@ -1,4 +1,3 @@
-import RepositoryModel from "./repo.model.js";
 import axios from "axios";
 import UserModel from "../../models/user.model.js";
 import RepositoryModel from "./repo.model.js";
