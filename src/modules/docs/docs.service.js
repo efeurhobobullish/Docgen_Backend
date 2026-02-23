@@ -39,3 +39,38 @@ export const generateReadmeService = async (userId, repoId) => {
 
   return document;
 };
+
+
+export const getLatestDocService = async (userId, repoId) => {
+  const doc = await DocumentModel.findOne({
+    repository: repoId,
+    type: "readme",
+  }).sort({ version: -1 });
+
+  if (!doc) {
+    throw new Error("No documentation found");
+  }
+
+  return doc;
+};
+
+export const getAllVersionsService = async (repoId) => {
+  return DocumentModel.find({
+    repository: repoId,
+    type: "readme",
+  }).sort({ version: -1 });
+};
+
+export const getSpecificVersionService = async (repoId, version) => {
+  const doc = await DocumentModel.findOne({
+    repository: repoId,
+    type: "readme",
+    version: version,
+  });
+
+  if (!doc) {
+    throw new Error("Version not found");
+  }
+
+  return doc;
+};
