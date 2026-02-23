@@ -6,6 +6,8 @@ import authRoutes from "./modules/auth/auth.routes.js";
 import githubRoutes from "./modules/github/github.routes.js";
 import docsRoutes from "./modules/docs/docs.routes.js";
 import billingRoutes from "./modules/billing/billing.routes.js";
+import teamRoutes from "./modules/team/team.routes.js";
+
 
 import { protect } from "./middlewares/auth.middleware.js";
 
@@ -43,6 +45,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/github", githubRoutes);
 app.use("/api/docs", docsRoutes);
 app.use("/api/billing", billingRoutes);
+app.use("/api/team", teamRoutes);
+
 
 /* ======================
    TEST PROTECTED ROUTE
