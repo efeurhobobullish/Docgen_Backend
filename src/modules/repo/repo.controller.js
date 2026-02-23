@@ -2,6 +2,7 @@ import {
   connectRepoService,
   getUserReposService,
   disconnectRepoService,
+  getRepoTreeService
 } from "./repo.service.js";
 
 export const connectRepo = async (req, res) => {
@@ -29,6 +30,22 @@ export const disconnectRepo = async (req, res) => {
       req.params.repoId
     );
     res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const getRepoTree = async (req, res) => {
+  try {
+    const files = await getRepoTreeService(
+      req.user.id,
+      req.params.repoId
+    );
+
+    res.status(200).json({
+      totalFiles: files.length,
+      files,
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
