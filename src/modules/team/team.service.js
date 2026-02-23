@@ -1,4 +1,5 @@
 import TeamModel from "./team.model.js";
+import UserModel from "../../models/user.model.js";
 
 /* ======================
    CREATE TEAM
@@ -28,29 +29,46 @@ export const getUserTeamsService = async (userId) => {
 };
 
 /* ======================
-   INVITE MEMBER
+   ADD MEMBER
 ====================== */
 export const addMemberService = async (
-  userId,
+  currentUserId,
   teamId,
   newUserId,
-  role
+  role = "member"
 ) => {
   const team = await TeamModel.findOne({
     _id: teamId,
-    "members.user": userId,
+    "members.user": currentUserId,
   });
 
   if (!team) {
     throw new Error("Team not found or access denied");
   }
 
+  const userExists = await UserModel.findById(newUserId);
+  if (!userExists) {
+    throw new Error("User does not exist");
+  }
+
+  const alreadyMember = team.members.find(
+    (m) => m.user.toString() === newUserId
+  );
+
+  if (alreadyMember) {
+    throw new Error("User already a member");
+  }
+
+  if (!["admin", "member"].includes(role)) {
+    role = "member";
+  }
+
   team.members.push({
     user: newUserId,
-    role: role || "member",
+    role,
   });
 
   await team.save();
 
-  return team;
+  return team.populate("members.user", "fullName email");
 };
