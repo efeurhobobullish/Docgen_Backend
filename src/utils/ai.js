@@ -64,3 +64,25 @@ Group them by:
 
   return response.choices[0].message.content;
 };
+
+
+export const generatePRSummaryAI = async (pr) => {
+  const prompt = `
+Summarize this pull request professionally:
+
+Title: ${pr.title}
+Description: ${pr.body}
+
+Include:
+- Summary of changes
+- Impact
+- Breaking changes (if any)
+`;
+
+  const response = await client.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  return response.choices[0].message.content;
+};
