@@ -150,3 +150,20 @@ export const fetchFileContent = async (
     return null; // Don't break generation if file doesn't exist
   }
 };
+
+export const fetchRepoTree = async (
+  githubToken,
+  fullName,
+  branch = "main"
+) => {
+  const response = await axios.get(
+    `https://api.github.com/repos/${fullName}/git/trees/${branch}?recursive=1`,
+    {
+      headers: {
+        Authorization: `Bearer ${githubToken}`,
+      },
+    }
+  );
+
+  return response.data.tree;
+};
