@@ -59,7 +59,13 @@ const userSchema = new Schema(
       type: String,
       select: false,
     },
-    
+    stripeCustomerId: {
+  type: String,
+},
+
+stripeSubscriptionId: {
+  type: String,
+},
     /* ======================
    USAGE LIMITS
 ====================== */
