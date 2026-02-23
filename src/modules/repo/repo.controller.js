@@ -2,7 +2,8 @@ import {
   connectRepoService,
   getUserReposService,
   disconnectRepoService,
-  getRepoTreeService
+  getRepoTreeService,
+  analyzeRepoService,
 } from "./repo.service.js";
 
 export const connectRepo = async (req, res) => {
@@ -46,6 +47,19 @@ export const getRepoTree = async (req, res) => {
       totalFiles: files.length,
       files,
     });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const analyzeRepo = async (req, res) => {
+  try {
+    const result = await analyzeRepoService(
+      req.user.id,
+      req.params.repoId
+    );
+
+    res.status(200).json(result);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
