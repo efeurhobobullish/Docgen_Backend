@@ -87,3 +87,21 @@ export const fetchUserRepos = async (githubToken) => {
     owner: repo.owner.login,
   }));
 };
+
+
+export const fetchPullRequest = async (
+  githubToken,
+  fullName,
+  prNumber
+) => {
+  const response = await axios.get(
+    `https://api.github.com/repos/${fullName}/pulls/${prNumber}`,
+    {
+      headers: {
+        Authorization: `Bearer ${githubToken}`,
+      },
+    }
+  );
+
+  return response.data;
+};
