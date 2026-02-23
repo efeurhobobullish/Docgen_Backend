@@ -42,3 +42,25 @@ export const createCheckoutSession = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
+export const createCustomerPortal = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.user.id);
+
+    if (!user.stripeCustomerId) {
+      return res.status(400).json({
+        message: "No active subscription found",
+      });
+    }
+
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: user.stripeCustomerId,
+      return_url: `${process.env.CLIENT_URL}/dashboard`,
+    });
+
+    res.json({ url: portalSession.url });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
