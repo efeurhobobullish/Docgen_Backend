@@ -41,6 +41,9 @@ export const generateReadmeService = async (userId, repoId) => {
   });
 
   return document;
+await UserModel.findByIdAndUpdate(userId, {
+  $inc: { "usage.readmeGenerations": 1 },
+});
 };
 
 /* ======================
