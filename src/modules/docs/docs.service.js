@@ -149,3 +149,30 @@ export const deleteVersionService = async (
 
   return { message: "Version deleted successfully" };
 };
+
+export const generateChangelogService = async (
+  userId,
+  repoId
+) => {
+  const repository = await RepositoryModel.findOne({
+    _id: repoId,
+    user: userId,
+  });
+
+  if (!repository) throw new Error("Repository not found");
+
+  const user = await UserModel.findById(userId).select("+githubAccessToken");
+
+  const commits = await fetchCommits(
+    user.githubAccessToken,
+    repository.fullName
+  );
+
+  const changelog = await generateChangelogAI(commits);
+
+  await UserModel.findByIdAndUpdate(userId, {
+    $inc: { "usage.changelogGenerations": 1 },
+  });
+
+  return { changelog };
+};
