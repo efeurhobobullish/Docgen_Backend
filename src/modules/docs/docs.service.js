@@ -4,6 +4,9 @@ import { getRepoTreeService } from "../repo/repo.service.js";
 import { analyzeRepository } from "../../utils/repoAnalyzer.js";
 import { generateReadmeAI } from "../../utils/ai.js";
 
+/* ======================
+   GENERATE README
+====================== */
 export const generateReadmeService = async (userId, repoId) => {
   const repository = await RepositoryModel.findOne({
     _id: repoId,
@@ -40,8 +43,19 @@ export const generateReadmeService = async (userId, repoId) => {
   return document;
 };
 
-
+/* ======================
+   GET LATEST README
+====================== */
 export const getLatestDocService = async (userId, repoId) => {
+  const repository = await RepositoryModel.findOne({
+    _id: repoId,
+    user: userId,
+  });
+
+  if (!repository) {
+    throw new Error("Repository not found");
+  }
+
   const doc = await DocumentModel.findOne({
     repository: repoId,
     type: "readme",
@@ -54,18 +68,46 @@ export const getLatestDocService = async (userId, repoId) => {
   return doc;
 };
 
-export const getAllVersionsService = async (repoId) => {
+/* ======================
+   GET ALL VERSIONS
+====================== */
+export const getAllVersionsService = async (userId, repoId) => {
+  const repository = await RepositoryModel.findOne({
+    _id: repoId,
+    user: userId,
+  });
+
+  if (!repository) {
+    throw new Error("Repository not found");
+  }
+
   return DocumentModel.find({
     repository: repoId,
     type: "readme",
   }).sort({ version: -1 });
 };
 
-export const getSpecificVersionService = async (repoId, version) => {
+/* ======================
+   GET SPECIFIC VERSION
+====================== */
+export const getSpecificVersionService = async (
+  userId,
+  repoId,
+  version
+) => {
+  const repository = await RepositoryModel.findOne({
+    _id: repoId,
+    user: userId,
+  });
+
+  if (!repository) {
+    throw new Error("Repository not found");
+  }
+
   const doc = await DocumentModel.findOne({
     repository: repoId,
     type: "readme",
-    version: version,
+    version,
   });
 
   if (!doc) {
@@ -73,4 +115,34 @@ export const getSpecificVersionService = async (repoId, version) => {
   }
 
   return doc;
+};
+
+/* ======================
+   DELETE VERSION
+====================== */
+export const deleteVersionService = async (
+  userId,
+  repoId,
+  version
+) => {
+  const repository = await RepositoryModel.findOne({
+    _id: repoId,
+    user: userId,
+  });
+
+  if (!repository) {
+    throw new Error("Repository not found");
+  }
+
+  const deleted = await DocumentModel.findOneAndDelete({
+    repository: repoId,
+    type: "readme",
+    version,
+  });
+
+  if (!deleted) {
+    throw new Error("Version not found");
+  }
+
+  return { message: "Version deleted successfully" };
 };
