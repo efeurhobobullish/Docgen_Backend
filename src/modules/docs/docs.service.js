@@ -176,3 +176,33 @@ export const generateChangelogService = async (
 
   return { changelog };
 };
+
+
+export const generatePRSummaryService = async (
+  userId,
+  repoId,
+  prNumber
+) => {
+  const repository = await RepositoryModel.findOne({
+    _id: repoId,
+    user: userId,
+  });
+
+  if (!repository) throw new Error("Repository not found");
+
+  const user = await UserModel.findById(userId).select("+githubAccessToken");
+
+  const pr = await fetchPullRequest(
+    user.githubAccessToken,
+    repository.fullName,
+    prNumber
+  );
+
+  const summary = await generatePRSummaryAI(pr);
+
+  await UserModel.findByIdAndUpdate(userId, {
+    $inc: { "usage.prSummaries": 1 },
+  });
+
+  return { summary };
+};
