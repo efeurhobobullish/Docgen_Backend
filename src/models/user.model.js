@@ -59,6 +59,30 @@ const userSchema = new Schema(
       type: String,
       select: false,
     },
+    
+    /* ======================
+   USAGE LIMITS
+====================== */
+
+plan: {
+  type: String,
+  enum: ["free", "pro"],
+  default: "free",
+},
+
+usage: {
+  readmeGenerations: { type: Number, default: 0 },
+  prSummaries: { type: Number, default: 0 },
+  changelogGenerations: { type: Number, default: 0 },
+  resetDate: {
+    type: Date,
+    default: () => {
+      const now = new Date();
+      now.setMonth(now.getMonth() + 1);
+      return now;
+    },
+  },
+},
 
     /* ======================
        ROLE & STATUS
