@@ -1,6 +1,13 @@
 import axios from "axios";
 import UserModel from "../../models/user.model.js";
 import RepositoryModel from "./repo.model.js";
+import { analyzeRepository } from "../../utils/repoAnalyzer.js";
+
+export const analyzeRepoService = async (userId, repoId) => {
+  const files = await getRepoTreeService(userId, repoId);
+  return analyzeRepository(files);
+};
+
 
 export const getRepoTreeService = async (userId, repoId) => {
   const repository = await RepositoryModel.findOne({
