@@ -40,3 +40,27 @@ Return clean markdown only.
 
   return response.choices[0].message.content;
 };
+
+export const generateChangelogAI = async (commits) => {
+  const commitMessages = commits
+    .map(c => c.commit.message)
+    .join("\n");
+
+  const prompt = `
+Generate a clean release changelog from these commits:
+
+${commitMessages}
+
+Group them by:
+- Features
+- Fixes
+- Improvements
+`;
+
+  const response = await client.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  return response.choices[0].message.content;
+};
