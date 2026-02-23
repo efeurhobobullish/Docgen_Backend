@@ -2,7 +2,7 @@ import RepositoryModel from "../repo/repo.model.js";
 import DocumentModel from "./docs.model.js";
 import { getRepoTreeService } from "../repo/repo.service.js";
 import { analyzeRepository } from "../../utils/repoAnalyzer.js";
-import { generateReadmeAI } from "../../utils/ai.js";
+import { generateReadmeAI, generateChangelogAI } from "../../utils/ai.js";
 
 /* ======================
    GENERATE README
