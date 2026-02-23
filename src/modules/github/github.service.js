@@ -122,3 +122,31 @@ export const fetchCommits = async (
 
   return response.data;
 };
+
+export const fetchFileContent = async (
+  githubToken,
+  fullName,
+  filePath
+) => {
+  try {
+    const response = await axios.get(
+      `https://api.github.com/repos/${fullName}/contents/${filePath}`,
+      {
+        headers: {
+          Authorization: `Bearer ${githubToken}`,
+        },
+      }
+    );
+
+    if (response.data.content) {
+      return Buffer.from(
+        response.data.content,
+        "base64"
+      ).toString("utf-8");
+    }
+
+    return null;
+  } catch (error) {
+    return null; // Don't break generation if file doesn't exist
+  }
+};
