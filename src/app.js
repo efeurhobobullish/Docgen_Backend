@@ -4,6 +4,9 @@ import helmet from "helmet";
 
 import authRoutes from "./modules/auth/auth.routes.js";
 import githubRoutes from "./modules/github/github.routes.js";
+import docsRoutes from "./modules/docs/docs.routes.js";
+
+
 import { protect } from "./middlewares/auth.middleware.js";
 
 const app = express();
@@ -18,6 +21,7 @@ app.use(helmet());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/github", githubRoutes);
+app.use("/api/docs", docsRoutes);
 
 /* ======================
    TEST PROTECTED ROUTE
