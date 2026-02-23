@@ -105,3 +105,20 @@ export const fetchPullRequest = async (
 
   return response.data;
 };
+
+export const fetchCommits = async (
+  githubToken,
+  fullName
+) => {
+  const response = await axios.get(
+    `https://api.github.com/repos/${fullName}/commits`,
+    {
+      headers: {
+        Authorization: `Bearer ${githubToken}`,
+      },
+      params: { per_page: 20 },
+    }
+  );
+
+  return response.data;
+};
