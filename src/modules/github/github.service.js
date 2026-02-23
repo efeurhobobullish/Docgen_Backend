@@ -63,3 +63,27 @@ export const handleGithubAuth = async (code) => {
 
   return { accessToken, refreshToken };
 };
+
+export const fetchUserRepos = async (githubToken) => {
+  const response = await axios.get(
+    "https://api.github.com/user/repos",
+    {
+      headers: {
+        Authorization: `Bearer ${githubToken}`,
+      },
+      params: {
+        per_page: 100,
+        sort: "updated",
+      },
+    }
+  );
+
+  return response.data.map((repo) => ({
+    id: repo.id,
+    name: repo.name,
+    fullName: repo.full_name,
+    private: repo.private,
+    defaultBranch: repo.default_branch,
+    owner: repo.owner.login,
+  }));
+};
